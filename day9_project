@@ -1,0 +1,23 @@
+from replit import clear
+from art import logo
+print(logo)
+auction_running = True
+bidders = {}
+while auction_running:
+  def new_bidder(name, bid):
+    bidders[name] = bid 
+  name_ = input("what is your name? ")
+  bid_ = input("how much do you want to bid? ")
+  new_bidder(name_, bid_)
+  a = input("are there more people?(y or n)")
+  if a == "n":
+    auction_running = False
+  elif a == "y":
+    clear()
+prev_bid = 0
+for bidder in bidders:
+  bid_amount = int(bidders[bidder])
+  if bid_amount > prev_bid:
+    prev_bid = bid_amount
+    winner = bidder
+print(f"{winner} wins with a bid of {prev_bid}")
