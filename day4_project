@@ -1,0 +1,52 @@
+rock = '''
+    _______
+---'   ____)
+      (_____)
+      (_____)
+      (____)
+---.__(___)
+'''
+
+paper = '''
+    _______
+---'   ____)____
+          ______)
+          _______)
+         _______)
+---.__________)
+'''
+
+scissors = '''
+    _______
+---'   ____)____
+          ______)
+       __________)
+      (____)
+---.__(___)
+'''
+
+#Write your code below this line 👇
+import random
+a = int(input("0 for rock, 1 for paper, and 2 for scissors"))
+b = random.randint(0,2)
+if a > 2:
+  print("invalid number, you lose.")
+elif a == 0 and b == 2:
+  print(f"{rock}\ncomputer chose:\n {scissors}\nyou win")
+elif b == 0 and a == 2:
+  print(f"{scissors}\ncomputer chose:\n {rock}\nyou lose")
+elif b > a:
+  if a == 0:
+    print(f"{rock}\ncomputer chose:\n {paper}\nyou lose")
+  elif a == 1:
+    print(f"{paper}\ncomputer chose:\n {scissors}\nyou lose")
+elif a > b:
+  if a == 0:
+    print(f"{rock}\ncomputer chose:\n {scissors}\nyou win")
+  elif a == 1:
+    print(f"{scissors}\ncomputer chose:\n {paper}\nyou win")
+elif a == b:
+  if a == 0:
+    print(f"{rock}\ncomputer chose:\n {rock}\nit's a draw")
+  elif a == 1:
+    print(f"{scissors}\ncomputer chose:\n {scissors}\nit's a draw")
