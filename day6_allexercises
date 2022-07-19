@@ -1,0 +1,30 @@
+def turn_right():
+    turn_left()
+    turn_left()
+    turn_left()
+def hurdle(): 
+    turn_left()
+    move()
+    turn_right()
+    move()
+    turn_right()
+    move()
+    turn_left()
+    
+while not at_goal():
+    while right_is_clear():
+        turn_right()
+        move()
+    while not right_is_clear():
+        while at_goal():
+            done()
+        if front_is_clear():
+            move()
+        else:
+            turn_left()
+            if front_is_clear():
+                move()
+            else:
+                turn_left()
+                move()
+            
