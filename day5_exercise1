@@ -6,11 +6,11 @@ for n in range(0, len(student_heights)):
 
 
 #Write your code below this row 👇
-
+num = 0
 all = 0
-a = len(student_heights)
 for student in student_heights:
   all += int(student)
+  num += 1
 
-average = all / a
+average = all / num
 print(average)
