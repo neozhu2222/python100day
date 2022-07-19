@@ -1,0 +1,26 @@
+
+import random
+a = random.randint(1,100)
+lives = 5
+print("welcome to the number guessing game.")
+print("I'm thinking of a number between 1 and 100")
+b = input("Choose a difficulty, easy or hard")
+if b == "easy":
+  lives = 10
+game_over = False
+while lives > 0 and game_over == False:
+  c = int(input("guess a number:"))
+  if c > a:
+    print("too high")
+    lives -= 1
+  elif c < a:
+    print("too low")
+    lives -=1
+  else:
+    print("you got it")
+    game_over = True
+
+if lives == 0:
+  print("you lost")
+
+
