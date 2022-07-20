@@ -1,0 +1,37 @@
+from turtle import Turtle, Screen
+import random
+all_turtles = []
+
+screen = Screen()
+screen.setup(width=500, height=400)
+user_bet = screen.textinput(title="make your bet", prompt="which turtle will win the race? enter a color:")
+colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+y = -100
+for _ in range (0,6):
+    tim = Turtle(shape="turtle")
+    tim.penup
+    tim.color(color[_])
+    tim.goto(x=-230,y=y)
+    y += 30
+    all_turtles.append(tim)
+
+is_on = False
+if user_bet:
+    is_on = True
+
+while is_on:
+    for turtle in all_turtles:
+        if turtle.xcor() > 230:
+            is_on = False
+            win = print(turtle.pencolor())
+            if user_bet == win:
+                print("You won!")
+            else: print(f"you lost. the winning turtle was {win}")
+        distance = random.randint(0,10)
+        turtle.forward(distance)
+
+
+
+
+
+screen.exitonclick()
