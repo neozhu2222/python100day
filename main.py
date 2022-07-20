@@ -1,49 +1,36 @@
-from turtle import Turtle, Screen
-from paddle import Paddle
-from ball import Ball
-from scoreboard import Scoreboard
 import time
-screen = Screen()
-turtle = Turtle()
+from turtle import Screen
+from player import Player
+from car_manager import CarManager
+from scoreboard import Scoreboard
+carmanager = CarManager()
 scoreboard = Scoreboard()
-screen.bgcolor("black")
-screen.setup(width=800, height=600)
+screen = Screen()
+screen.setup(width=600, height=600)
 screen.tracer(0)
+player = Player()
+
 screen.listen()
-paddle = Turtle()
-paddle.penup()
-paddle.goto(350,0)
-paddle.shape("square")
-paddle.color("white")
-paddle.shapesize(stretch_win=5, stretch_len=1)
+screen.onkey(player.go_up, "up")
 
 
-rp = Paddle((350, 0))
-lp = Paddle((-350, 0))
-ball = Ball()
-
-game_on = True
-while game_on:
-    time.sleep(ball.move_speed)
+player = Player()
+game_is_on = True
+while game_is_on:
+    time.sleep(0.1)
     screen.update()
-    ball.move()
-    if ball.ycor() > 280 or ball.ycor() < -280:
-        ball.bounce_y()
-    if ball.distance(rp) < 50 and ball.xcor > 320 or ball.distance(lp) < 50 and ball.xcor < -320:
-        ball.bounce_x()
-    if ball.xcor() > 380:
-        ball.r()
-        scoreboard.lp
-    if ball.xcor() < -380:
-        ball.r()
-        scoreboard.rp
+    carmanager.create_cars()
+    carmanager.move_cars()
+
+    for car in carmanager.all_cars:
+        if car.distance(player) < 20:
+            scoreboard.game_over()
+            game_is_on = False
+
+    if player.at_finish():
+        player.go_to_start()
+        carmanager.level_up()
+        scoreboard.increase_level()
 
 
-screen.onkey(rp.go_up, "up")
-screen.onkey(rp.go_down, "down")
 
-screen.onkey(lp.go_up, "w")
-screen.onkey(lp.go_down, "s")
-
-
-screen.exitonclick()
