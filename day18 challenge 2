@@ -1,0 +1,24 @@
+import turtle as t
+import random
+
+tim = t.Turtle()
+
+########### Challenge 4 - Random Walk ########
+colours = ["CornflowerBlue", "DarkOrchid", "IndianRed", "DeepSkyBlue", "LightSeaGreen", "wheat", "SlateGray", "SeaGreen"]
+t.pensize(15)
+for _ in range(201):
+  a = random.randint(0,3)
+  t.color(random.choice(colours))
+  if a == 0:
+    t.forward(10)
+  elif a == 1:
+    t.right(90)
+    t.forward(10)
+  elif a ==2:
+    t.right(180)
+    t.forward(10)
+  else:
+    t.left(90)
+  t.forward(10)
+  
+  
