@@ -1,0 +1,16 @@
+#####Turtle Intro######
+
+import turtle as t
+
+tim = t.Turtle()
+tim.shape("turtle")
+tim.color("red")
+
+
+######## Challenge 1 - Draw a Square ############
+for number in range(3,12):
+  for side in range(number):
+    tim.forward(100)
+    tim.left(360 / number)
+  
+
