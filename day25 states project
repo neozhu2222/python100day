@@ -1,0 +1,30 @@
+import pandas
+import turtle
+
+screen = turtle.screen()
+screen.title("U.S. States Game")
+image = "blank_states_img.gif"
+screen.addshape(image)
+guess_states = []
+data = pandas.read_csv("50_states.csv")
+all_states = data.state.to_list()
+
+turtle.shape(image)
+
+while len(guess_states < 50):
+    user_answer = screen.textinput(title=f"{len(guess_states)}/50 states correct", prompt="what is another state?").title()
+    if user_answer == "Exit":
+        missing_states = []
+        for state in all_states:
+            if state not in guess_states:
+                missing_states.append(state)
+        new_data = pandas.DataFrame(missing_states)
+        new_data.to_csv("States_to_Learn.csv")
+        break
+    if user_answer in all_states:
+        guess_states.append(user_answer)
+        t = turtle.Turtle
+        t.penup()
+        state_data = data[data.state == user_answer]
+        t.goto(int(state_data.x), int(state_data.y))
+        t.write(user_answer)
