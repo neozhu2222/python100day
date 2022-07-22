@@ -1,0 +1,52 @@
+BACKGROUND_COLOR = "#B1DDC6"
+from tkinter import *
+import pandas
+import random
+french_words = pandas.read_csv("/data/french_words.csv")
+to_learn = french_words.to_dict(orient="records")
+current_card = {}
+
+
+def next_card():
+    global current_card
+    current_card = random.choice(to_learn)
+    canvas.config(card, text=current_card["French"])
+    window.after(3000, func=flip_card)
+
+
+def right_button():
+    global current_card
+    to_learn.remove(current_card)
+    next_card()
+
+
+def flip_card():
+    global current_card
+    canvas.config(card, text=current_card["English"])
+
+
+correct_button_img = PhotoImage(file="/images/right.png")
+wrong_button_img = PhotoImage(file="/images/wrong.png")
+card_front = PhotoImage(file="/images/card_front.png")
+card_back = PhotoImage(file="/images/card_back.png")
+window = Tk()
+window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+window.after(3000, func=flip_card)
+canvas = Canvas(width=800, height=526)
+canvas.config(bg=BACKGROUND_COLOR, highlightthickness=0)
+canvas.grid(column=0, row=0, columnspan=2)
+canvas.create_image(400, 264, image=card_back)
+canvas.create_text(400, 150, text="title", font=("Ariel", 40, "italic"))
+card = canvas.create_text(400, 263, text="word", font=("Ariel", 60, "bold"))
+
+unknown_button = Button(image=wrong_button_img, highlightthickness=0, command=next_card)
+unknown_button.grid(row=1, column=0)
+known_button = Button(image=correct_button_img, highlightthickness=0, command=right_button)
+known_button.grid(row=1, column=1)
+
+next_card()
+
+
+
+window.mainloop()
+
