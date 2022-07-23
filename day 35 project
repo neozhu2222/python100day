@@ -1,0 +1,34 @@
+import requests
+import smtplib
+
+params = {
+    "lat" : latitude
+    "lon" : longitude
+    "appid" : apikey
+    "exclude" : "current,minutely,daily"
+}
+
+
+response = requests.get(OWN_ENDPOINT, params=params)
+data_dict = response.json()
+
+
+def send_email():
+    server = smtplib.SMTP("smtp@gmail.com")
+    server.login(MY_EMAIL, MY_PASSWORD)
+    server.sendmail(MY_EMAIL, MY_EMAIL, "Bring an umbrella")
+    server.close()
+
+is_on = True
+while is_on:
+    for hour in range(0,12):
+        if data_dict["hourly"][hour]["weather"][hour]["id"] < 700:
+            send_email()
+            is_on = False
+
+
+
+
+
+
+
