@@ -1,0 +1,52 @@
+STOCK_NAME = "TSLA"
+COMPANY_NAME = "Tesla Inc"
+import requests
+from twilio.rest import Client
+STOCK_ENDPOINT = "https://www.alphavantage.co/query"
+NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
+
+def get_news():
+    newsparams = {
+        "apikey": NEWS_API_KEY,
+        "qInTitle": COMPANY_NAME,
+    }
+    responce = requests.get(NEWS_ENDPOINT, newsparams)
+    articles = responce.json()["articles"]
+    three_articles = articles[:3]
+    formart = [f"Headline: {article['title']}. \nBreif: {article['description']}" for article in three_articles]
+    client = Client(TWILIO_SID, TWILLIO_AUTH_TOKEN)
+    for article in formart:
+        message = client.messages.create(
+            body=article
+            from=TWILLIO_VIR_NUMBER
+            to=MY_NUMBER
+        )
+
+
+
+
+
+stock_params = {
+    "function": "TIME_SERIES_DAILY"
+    "symbol": STOCK_NAME,
+    "apikey": API_KEY,
+}
+
+a = requests.get(STOCK_ENDPOINT, params=stock_params)
+dict = a.json()["Time Series (Daily)"]
+data_list = [value for (key,value) in dict.items()]
+yesterday_data = data_list[0]
+yesterday_price = float(yesterday_data["4. close"])
+
+daybe4y_data = data_list[1]
+daybe4y_close = float(daybe4y_data["4. close"])
+
+posdiff = abs(yesterday_price - daybe4y_close)
+
+
+diffper = posdiff / float(yesterday_price) * 100
+
+if diffper > 5:
+    get_news()
+
+
