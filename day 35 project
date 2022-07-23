@@ -1,6 +1,5 @@
 import requests
-import smtplib
-
+from twilio.rest import Client
 params = {
     "lat" : latitude
     "lon" : longitude
@@ -13,17 +12,23 @@ response = requests.get(OWN_ENDPOINT, params=params)
 data_dict = response.json()
 
 
-def send_email():
-    server = smtplib.SMTP("smtp@gmail.com")
-    server.login(MY_EMAIL, MY_PASSWORD)
-    server.sendmail(MY_EMAIL, MY_EMAIL, "Bring an umbrella")
-    server.close()
+def send_sms():
+    client = Client(account_id, auth_token)
+    message = client.messages \
+        .create(
+        body="bring an umbrella"
+        from=twilio_phone
+        to=my_phone
+    )
+
+
+
 
 is_on = True
 while is_on:
     for hour in range(0,12):
         if data_dict["hourly"][hour]["weather"][hour]["id"] < 700:
-            send_email()
+            send_sms()
             is_on = False
 
 
