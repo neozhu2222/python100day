@@ -1,0 +1,48 @@
+import requests
+GENDER = "male"
+WEIGHT = "57"
+HEIGHT = "175"
+AGE = "14"
+
+
+user_input = input("tell me what exercises you did: ")
+
+
+headers = {
+    "x-app-id": API_ID,
+    "x-app-key": API_KEY,
+}
+
+
+params = {
+    "query": user_input,
+    "gender": GENDER,
+    "weight_kg": WEIGHT,
+    "height_cm": HEIGHT,
+    "age": AGE
+}
+
+
+response = requests.post(endpoint, json=params, headers=headers)
+result = response.json()
+
+date_today = datetime.now().strftime("%d/%m/%Y")
+time_now = datetime.now().strftime("%X")
+
+for exercise in result[exercises]:
+    sheet_inputs = {
+        "workout": {
+            "date": date_today,
+            "time": time_now,
+            "exercise": exercise["name"].title(),
+            "duration": exercise["duration_min"],
+            "calories": exercise["nf_calories"],
+        }
+    }
+
+sheet_response = requests.post(sheet_endpoint, sheet_inputs)
+
+
+
+
+
