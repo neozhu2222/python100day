@@ -1,22 +1,28 @@
 from flask import Flask, render_template
-import random
-import datetime
+from post import Post
 import requests
+
+posts = requests.get("https://api.npoint.io/5abcca6f4e39b4955965").json()
+post_objects = []
+for post in posts:
+    post_obj = Post(post["id"], post["title"], post["subtitle"], post["body"])
+    post_objects.append(post_obj)
 
 app = Flask(__name__)
 
-@app.route('/guess/<name>')
-def guess(name):
-    gender_url = f"url{name}"
-    gender_response = requests.get(gender_url)
-    gender_data = gender_response.json()
-    gender = gender_data["gender"]
-    age_url = f"url{name}"
-    age_response = requests.get(age_url)
-    age_data = age_response.json()
-    age = age_data["age"]
-    return render_template("guess.html", person_name=name)
 
+@app.route('/')
+def get_all_posts():
+    return render_template("index.html", all_posts=post_objects)
+
+
+@app.route("/post/<int:index>")
+def show_post(index):
+    requested_post = None
+    for blog_post in post_objects:
+        if blog_post.id == index:
+            requested_post = blog_post
+    return render_template("post.html", post=requested_post)
 
 
 if __name__ == "__main__":
