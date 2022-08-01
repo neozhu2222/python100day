@@ -1,26 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/styles.css">
-</head>
-<body>
-<div class="wrapper">
-    <div class="top">
-        <div class="title"><h1>My Blog</h1></div>
-    </div>
-    <div class="content">
-        <div class="card">
-            <h1> {‌{ post.title }}</h1>
-            <h2> {‌{ post.subtitle }}</h2>
-            <p> {‌{ post.body }}</p>
+{% include "header.html" %}
+
+  <header class="masthead" style="background-image: url('{{post.image_url}}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>{{post.title}}</h1>
+            <h2 class="subheading">{{post.subtitle}}</h2>
+            <span class="meta">Posted by
+              <a href="#">{{post.author}}</a>
+              on {{post.date}}</span>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-</body>
-<footer>
-    <p>Made with ♥️ in London.</p>
-</footer>
-</html>
+  </header>
+
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <p>
+            {{post.body}}
+          </p>
+          </div>
+      </div>
+    </div>
+  </article>
+
+  <hr>
+{% include "footer.html" %}
