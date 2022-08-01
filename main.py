@@ -1,47 +1,30 @@
-from flask import Flask, render_template, request
-import smtplib
-import requests
+from flask import Flask, render_template
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
 
-posts = requests.get("https://api.npoint.io/43644ec4f0013682fc0d").json()
-OWN_EMAIL = YOUR OWN EMAIL ADDRESS
-OWN_PASSWORD = YOUR EMAIL ADDRESS PASSWORD
+
+class LoginForm(FlaskForm):
+    email = StringField('email')
+    password = StringField('password')
+
 app = Flask(__name__)
+app.secret_key = "any-string-you-want-just-keep-it-secret"
 
-@app.route('/')
-def get_all_posts():
-    return render_template("index.html", all_posts=posts)
+@app.route("/")
+def home():
+    return render_template('index.html')
 
-
-@app.route("/post/<int:index>")
-def show_post(index):
-    requested_post = None
-    for blog_post in posts:
-        if blog_post["id"] == index:
-            requested_post = blog_post
-    return render_template("post.html", post=requested_post)
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        if login_form.email.data == "admin@email.com" and login_form.password.data == "12345678":
+            return render_template("success.html")
+        else:
+            return render_template("denied.html")
+    return render_template("login.html", form=login_form)
 
 
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "POST":
-        data = request.form
-        send_email(data["name"], data["email"], data["phone"], data["message"])
-        return render_template("contact.html", msg_sent=True)
-    return render_template("contact.html", msg_sent=False)
-
-
-def send_email(name, email, phone, message):
-    email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
-    with smtplib.SMTP("smtp.gmail.com") as connection:
-        connection.starttls()
-        connection.login(OWN_EMAIL, OWN_PASSWORD)
-        connection.sendmail(OWN_EMAIL, OWN_EMAIL, email_message)
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
+
