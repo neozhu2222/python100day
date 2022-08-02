@@ -1,54 +1,60 @@
-from flask import Flask, render_template
-from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
-import csv
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-Bootstrap(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///books.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
-class CafeForm(FlaskForm):
-    cafe = StringField('Cafe name', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-# Exercise:
-# add: Location URL, open time, closing time, coffee rating, wifi rating, power outlet rating fields
-# make coffee/wifi/power a select element with choice of 0 to 5.
-#e.g. You could use emojis ☕️/💪/✘/🔌
-# make all fields required except submit
-# use a validator to check that the URL field has a URL entered.
-# ---------------------------------------------------------------------------
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    author = db.Column(db.String(250), nullable=False)
+    rating = db.Column(db.Float, nullable=False)
 
 
-# all Flask routes below
-@app.route("/")
+db.create_all()
+
+@app.route('/')
 def home():
-    return render_template("index.html")
+    all_books = db.session.query(Book).all()
+    return render_template("index.html", books=all_books)
+
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method == "POST":
+        new_book = Book(
+            title=request.form["title"],
+            author=request.form["author"],
+            rating=request.form["rating"]
+        )
+        db.session.add(new_book)
+        db.session.commit()
+        return redirect(url_for('home'))
+    return render_template("add.html")
 
 
-@app.route('/add')
-def add_cafe():
-    form = CafeForm()
-    if form.validate_on_submit():
-        print("True")
-    # Exercise:
-    # Make the form write a new row into cafe-data.csv
-    # with   if form.validate_on_submit()
-    return render_template('add.html', form=form)
+@app.route("/edit", methods=["GET", "POST"])
+def edit():
+    if request.method == "POST":
+        book_id = request.form["id"]
+        book_to_update = Book.query.get(book_id)
+        book_to_update.rating = request.form["rating"]
+        db.session.commit()
+        return redirect(url_for('home'))
+    book_id = request.args.get('id')
+    book_selected = Book.query.get(book_id)
+    return render_template("edit_rating.html", book=book_selected)
 
+@app.route("/delete")
+def delete():
+    book_id = request.args.get('id')
+    book_to_delete = Book.query.get(book_id)
+    db.session.delete(book_to_delete)
+    db.session.commit()
+    return redirect(url_for('home'))
 
-@app.route('/cafes')
-def cafes():
-    with open('cafe-data.csv', newline='') as csv_file:
-        csv_data = csv.reader(csv_file, delimiter=',')
-        list_of_rows = []
-        for row in csv_data:
-            list_of_rows.append(row)
-    return render_template('cafes.html', cafes=list_of_rows)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
